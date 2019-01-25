@@ -76,16 +76,12 @@ update_results() {
       _err "git pull error"
     fi
     if [ "$code" = "0" ] ; then
-      if [ -f "badges/ok.svg" ] ; then
-        cat "badges/ok.svg" > "badges/$statusfile.svg"
-      fi
+      cat "badges/ok.png" > "badges/$statusfile.png"
     else
-      if [ -f "badges/ng.svg" ] ; then
-        cat "badges/ng.svg" > "badges/$statusfile.svg"
-      fi
+      cat "badges/ng.png" > "badges/$statusfile.png"
     fi
 
-    git add "badges/$statusfile.svg" >/dev/null 2>&1
+    git add "badges/$statusfile.png" >/dev/null 2>&1
 
     url="$Img/$statusfile?$(date +%s)"
     echo "| $shell | $db | ![]($url) | $(date) |" >> "$Results"
