@@ -329,15 +329,13 @@ if [ "$CI" = "1" ] ; then
   hdr="| Shell | DB  | Result | Test Date |"
   echo "$hdr"  > "$Results"
   echo "| ----- | --- | ------ | --------- |" >> "$Results"
-  sed -n '1,/(START_TEST_RESULTS)/p' README.md > head.md
-  sed -n '/(END_TEST_RESULTS)/,$p'   README.md > tail.md
 fi
 
 testall
 code="$?"
 
 if [ "$CI" = "1" ] ; then
-  cat head.md "$Results" tail.md > ../README.md
+  cat head.md "$Results" > README.md
   git add README.md >/dev/null 2>&1
   git add logs/* >/dev/null 2>&1
   git commit -m "CI test run" >/dev/null 2>&1
