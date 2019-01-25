@@ -1,0 +1,5 @@
+1.out
+*.actual
+shmig.conf
+shmig
+sql/test.db

@@ -1,0 +1,10 @@
+Sending build context to Docker daemon  3.072kB
+Step 1/2 : FROM alpine:3.8
+ ---> 3f53bb00af94
+Step 2/2 : RUN apk update 2>&1 && apk add bash sqlite  2>&1
+ ---> Using cache
+ ---> b3c5c1882cf0
+Successfully built b3c5c1882cf0
+Successfully tagged alpine-3.8-bash-sqlite3:latest
+		stdout: PASS
+		stderr: PASS
