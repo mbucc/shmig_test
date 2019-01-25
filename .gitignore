@@ -3,3 +3,4 @@
 shmig.conf
 shmig
 sql/test.db
+alpine-3.8-bash-sqlite3/
