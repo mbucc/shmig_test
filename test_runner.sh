@@ -64,6 +64,7 @@ update_results() {
   platname="$2"
   shell="$3"
   db="$4"
+  dockerimg="$5"
 
   if [ "$code" = "0" ] ; then
     __ok "$platname"
@@ -84,8 +85,9 @@ update_results() {
 
     git add "$badge" >/dev/null 2>&1
 
-    url="$Img/${badge}?$(date +%s)"
-    echo "| $shell | $db | ![]($url) | $(date) |" >> "$Results"
+    badgeurl="$Img/${badge}?$(date +%s)"
+    logurl="$Img/logs/$platname.log?$(date +%s)"
+    echo "| $dockerimg | $shell | $db | ![]($badgeurl) | $(date) ([log]($Logurl)] |" >> "$Results"
 
   fi
 }
@@ -274,7 +276,7 @@ testplat() {
   _debug "Log_Out" "$Log_Out"
 
   if ! _startdb "$db" "$Log_Out" ; then
-    update_results "$code" "$platname" "$shell" "$db"
+    update_results "$code" "$platname" "$shell" "$db" "$dockerimg"
     return "$code"
   fi
 
@@ -297,7 +299,7 @@ testplat() {
     cat "$Log_Out"
   fi
 
-  update_results "$code" "$platname" "$shell" "$db"
+  update_results "$code" "$platname" "$shell" "$db" "$dockerimg"
 
   return $code
 
@@ -321,15 +323,14 @@ testall() {
 
 if [ "$CI" = "1" ] ; then
   rm -f "$Results"
-  hdr="| Shell | DB  | Result | Test Date |"
-  echo "$hdr"  > "$Results"
-  echo "| ----- | --- | ------ | --------- |" >> "$Results"
+  echo "| Client | Shell | DB  | Result | Test Date |" > "$Results"
+  echo "| ------ | ----- | --- | ------ | --------- |" >> "$Results"
 fi
 
-set -x
-cat test_runner.conf
-grep -v '^#' test_runner.conf
-set +x
+if [ "$DEBUG" ] ; then
+  cat test_runner.conf
+  grep -v '^#' test_runner.conf
+fi
 
 testall
 
