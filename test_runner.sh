@@ -310,7 +310,8 @@ testall() {
   for plat in $allplats
   do
     if [ "$plat" ] ; then
-      testplat "$plat"
+      #echo testplat "$plat"
+      echo "plat" "$plat"
       code=$(( code + $? ))
     fi
   done
@@ -327,8 +328,15 @@ if [ "$CI" = "1" ] ; then
   echo "| ----- | --- | ------ | --------- |" >> "$Results"
 fi
 
+set -x
+cat test_runner.conf
+grep -v '^#' test_runner.conf
+set +x
+
 testall
+
 code="$?"
+
 
 if [ "$CI" = "1" ] ; then
   cat head.md "$Results" > README.md
