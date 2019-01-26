@@ -87,7 +87,7 @@ update_results() {
 
     badgeurl="$Img/${badge}?$(date +%s)"
     logurl="$Img/logs/$platname.out?$(date +%s)"
-    echo "| $dockerimg | $shell | $db | ![]($badgeurl) | $(date) ([log]($Logurl)] |" >> "$Results"
+    echo "| $dockerimg | $shell | $db | ![]($badgeurl) | $(date) ([log]($logurl) |" >> "$Results"
 
   fi
 }
