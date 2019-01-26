@@ -343,7 +343,8 @@ if [ "$CI" = "1" ] ; then
 
   # Decode private deploy SSH key
   openssl aes-256-cbc -k "$travis_key_password" -md sha256 -d -a -in travis_key.enc -out ./travis_key
-  echo -e "Host github.com\n  IdentityFile $(pwd)/travis_key" > ~/.ssh/config
+  echo "Host github.com" > ~/.ssh/config
+  echo "  IdentityFile $(pwd)/travis_key" >> ~/.ssh/config
   if [ "$DEBUG" ] ; then
     cat ~/.ssh/config
     echo "$(pwd)"
