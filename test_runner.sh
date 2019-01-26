@@ -308,8 +308,7 @@ testall() {
   grep -v '^#' test_runner.conf | while read -r plat
   do
     if [ "$plat" ] ; then
-      #echo testplat "$plat"
-      echo "plat" "$plat"
+      testplat "$plat"
       code=$(( code + $? ))
     fi
   done
