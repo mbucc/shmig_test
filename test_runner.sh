@@ -86,7 +86,7 @@ update_results() {
     git add "$badge" >/dev/null 2>&1
 
     badgeurl="$Img/${badge}?$(date +%s)"
-    logurl="$Img/logs/$platname.log?$(date +%s)"
+    logurl="$Img/logs/$platname.out?$(date +%s)"
     echo "| $dockerimg | $shell | $db | ![]($badgeurl) | $(date) ([log]($Logurl)] |" >> "$Results"
 
   fi

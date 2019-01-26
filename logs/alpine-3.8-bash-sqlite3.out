@@ -1,12 +1,5 @@
-Sending build context to Docker daemon  2.048kB
+Sending build context to Docker daemon  3.072kB
 Step 1/2 : FROM alpine:3.8
-3.8: Pulling from library/alpine
-cd784148e348: Pulling fs layer
-cd784148e348: Verifying Checksum
-cd784148e348: Download complete
-cd784148e348: Pull complete
-Digest: sha256:46e71df1e5191ab8b8034c5189e325258ec44ea739bba1e5645cff83c9048ff1
-Status: Downloaded newer image for alpine:3.8
  ---> 3f53bb00af94
 Step 2/2 : RUN apk update  && apk add bash sqlite
  ---> Running in 9029bb3b0497
