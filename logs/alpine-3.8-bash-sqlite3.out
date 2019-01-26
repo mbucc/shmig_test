@@ -9,7 +9,7 @@ Digest: sha256:46e71df1e5191ab8b8034c5189e325258ec44ea739bba1e5645cff83c9048ff1
 Status: Downloaded newer image for alpine:3.8
  ---> 3f53bb00af94
 Step 2/2 : RUN apk update  && apk add bash sqlite
- ---> Running in e381414787d6
+ ---> Running in 914a770e0b0d
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/community/x86_64/APKINDEX.tar.gz
 v3.8.2-32-g15e24e93a6 [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
@@ -24,9 +24,9 @@ Executing bash-4.4.19-r1.post-install
 (6/6) Installing sqlite (3.25.3-r0)
 Executing busybox-1.28.4-r2.trigger
 OK: 14 MiB in 19 packages
- ---> f344f982eb6f
-Removing intermediate container e381414787d6
-Successfully built f344f982eb6f
+ ---> 977672e94d31
+Removing intermediate container 914a770e0b0d
+Successfully built 977672e94d31
 Successfully tagged alpine-3.8-bash-sqlite3:latest
 		stdout: PASS
 		stderr: PASS
