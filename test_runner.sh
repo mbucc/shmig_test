@@ -3,7 +3,7 @@
 
 Results=results.md
 
-Img="https://cdn.rawgit.com/mbucc/shmig_test/master/badges"
+Img="https://raw.githubusercontent.com/mbucc/shmig_test/master"
 
 __ok() {
   echo "$1 [PASS]"
@@ -76,14 +76,14 @@ update_results() {
       _err "git pull error"
     fi
     if [ "$code" = "0" ] ; then
-      cat "badges/ok.png" > "badges/$statusfile.png"
+      cat "badges/ok.png" > "badges/$platname.png"
     else
-      cat "badges/ng.png" > "badges/$statusfile.png"
+      cat "badges/ng.png" > "badges/$platname.png"
     fi
 
-    git add "badges/$statusfile.png" >/dev/null 2>&1
+    git add "badges/$platname.png" >/dev/null 2>&1
 
-    url="$Img/$statusfile?$(date +%s)"
+    url="$Img/badges/$platname?$(date +%s)"
     echo "| $shell | $db | ![]($url) | $(date) |" >> "$Results"
 
   fi
@@ -273,7 +273,7 @@ testplat() {
   _debug "Log_Out" "$Log_Out"
 
   if ! _startdb "$db" "$Log_Out" ; then
-    update_results "$code" "$platline" "$shell" "$db"
+    update_results "$code" "$platname" "$shell" "$db"
     return "$code"
   fi
 
@@ -296,7 +296,7 @@ testplat() {
     cat "$Log_Out"
   fi
 
-  update_results "$code" "$platline" "$shell" "$db"
+  update_results "$code" "$platname" "$shell" "$db"
 
   return $code
 
