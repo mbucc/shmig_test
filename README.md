@@ -9,4 +9,4 @@ Latest Results
 
 | Shell | DB  | Result | Test Date |
 | ----- | --- | ------ | --------- |
-| /bin/bash | sqlite3 | ![](https://raw.githubusercontent.com/mbucc/shmig_test/master/badges/alpine-3.8-bash-sqlite3?1548535243) | Sat Jan 26 20:40:43 UTC 2019 |
+| /bin/bash | sqlite3 | ![](https://raw.githubusercontent.com/mbucc/shmig_test/master/badges/alpine-3.8-bash-sqlite3.png?1548535623) | Sat Jan 26 20:47:03 UTC 2019 |
