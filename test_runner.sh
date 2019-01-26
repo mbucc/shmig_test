@@ -305,9 +305,7 @@ testplat() {
 testall() {
   code=0
   docker network create shmig-net
-  allplats=$(grep -v '^#' test_runner.conf)
-  IFS=$'\n'
-  for plat in $allplats
+  grep -v '^#' test_runner.conf | while read -r plat
   do
     if [ "$plat" ] ; then
       #echo testplat "$plat"
