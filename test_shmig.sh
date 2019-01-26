@@ -1,3 +1,5 @@
+#! /bin/sh
+
 #
 # 		Run shmig commands one-by-one.
 #
@@ -10,7 +12,7 @@ while IFS= read -r cmd; do
 
   printf "\n%s\n---------------\n" "$cmd" >>$F
 
-  ./shmig -c ./shmig.conf $cmd >>$F 2>>$E
+  ./shmig -c ./shmig.conf "$cmd" >>$F 2>>$E
 
 done < test_shmig_commands.txt
 
@@ -35,17 +37,17 @@ mv $E stderr.actual
 
 rval=0
 if diff -uw test_shmig_stdout.expected stdout.actual >/dev/null; then
-  printf "		stdout: PASS\n" $1
+  printf "		stdout: PASS\n"
 else
-  printf "		stdout: FAIL\n" $1
+  printf "		stdout: FAIL\n"
   diff -uw test_shmig_stdout.expected stdout.actual
   rval=1
 fi
 
 if diff -uw test_shmig_stderr.expected stderr.actual >/dev/null; then
-  printf "		stderr: PASS\n" $1
+  printf "		stderr: PASS\n"
 else
-  printf "		stderr: FAIL\n" $1
+  printf "		stderr: FAIL\n"
   diff -uw test_shmig_stderr.expected stderr.actual
   rval=1
 fi
