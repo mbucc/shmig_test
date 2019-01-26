@@ -340,7 +340,7 @@ if [ "$CI" = "1" ] ; then
   git add README.md >/dev/null 2>&1
   git add logs/* >/dev/null 2>&1
   git commit -m "CI test run" >/dev/null 2>&1
-  if ! git push >/dev/null 2>&1 ; then
+  if ! git push ; then
     _err "git push error"
   fi
 fi
