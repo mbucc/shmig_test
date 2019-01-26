@@ -12,7 +12,7 @@ while IFS= read -r cmd; do
 
   printf "\n%s\n---------------\n" "$cmd" >>$F
 
-  ./shmig -c ./shmig.conf "$cmd" >>$F 2>>$E
+  ./shmig -c ./shmig.conf $cmd >>$F 2>>$E
 
 done < test_shmig_commands.txt
 
