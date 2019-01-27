@@ -1,5 +1,7 @@
 #! /bin/sh
 # Run tests for all platform combinations.
+#
+# shfmt -i 2 -sr -ci -w test_runner.sh
 
 Results=results.md
 
@@ -19,7 +21,7 @@ _date_u() {
 }
 
 _info() {
-  if [ -z "$2" ] ; then
+  if [ -z "$2" ]; then
     echo "[$(date)] $1"
   else
     echo "[$(date)] $1"="'$2'"
@@ -32,21 +34,18 @@ _err() {
 }
 
 _debug() {
-  if [ -z "$DEBUG" ] ; then
+  if [ -z "$DEBUG" ]; then
     return
   fi
   _err "$@"
   return 0
 }
 
-
-
 #alpine:3.8-bash-mysql:8
 _normalizeFilename() {
   _nplat="$1"
   printf "%s" "$_nplat" | tr ':/ \\' '----'
 }
-
 
 #alpine:3.8-bash-mysql:8
 _getOutfile() {
@@ -55,7 +54,6 @@ _getOutfile() {
   mkdir -p logs
   printf "%s" "logs/$statusfile.out"
 }
-
 
 # alpine:3.8|apk update|apk add|bash,sqlite|/bin/bash|sqlite
 update_results() {
@@ -66,24 +64,24 @@ update_results() {
   db="$4"
   dockerimg="$5"
 
-  if [ "$code" = "0" ] ; then
+  if [ "$code" = "0" ]; then
     __ok "$platname"
   else
     __fail "$platname"
   fi
 
-  if [ "$CI" = "1" ] ; then
-    if ! git pull >/dev/null 2>&1 ; then
+  if [ "$CI" = "1" ]; then
+    if ! git pull > /dev/null 2>&1; then
       _err "git pull error"
     fi
     badge="badges/$platname.png"
-    if [ "$code" = "0" ] ; then
+    if [ "$code" = "0" ]; then
       cat "badges/ok.png" > "$badge"
     else
       cat "badges/ng.png" > "$badge"
     fi
 
-    git add "$badge" >/dev/null 2>&1
+    git add "$badge" > /dev/null 2>&1
 
     badgeurl="$Img/${badge}?$(date +%s)"
     logurl="$Img/logs/$platname.out?$(date +%s)"
@@ -99,21 +97,21 @@ _writeShmigConfig() {
 
   case "$db" in
     sqlite3*)
-      echo TYPE=sqlite3           >> shmig.conf
+      echo TYPE=sqlite3 >> shmig.conf
       echo DATABASE=./sql/test.db >> shmig.conf
       ;;
     mysql*)
-      echo TYPE=mysql             >> shmig.conf
-      echo DATABASE=mysql         >> shmig.conf
-      echo LOGIN=root             >> shmig.conf
-      echo HOST=db                >> shmig.conf
+      echo TYPE=mysql >> shmig.conf
+      echo DATABASE=mysql >> shmig.conf
+      echo LOGIN=root >> shmig.conf
+      echo HOST=db >> shmig.conf
       ;;
     psql*)
-      echo TYPE=postgresql        >> shmig.conf
-      echo DATABASE=postgres      >> shmig.conf
-      echo LOGIN=postgres         >> shmig.conf
-      echo PASSWORD=postgres      >> shmig.conf
-      echo HOST=db                >> shmig.conf
+      echo TYPE=postgresql >> shmig.conf
+      echo DATABASE=postgres >> shmig.conf
+      echo LOGIN=postgres >> shmig.conf
+      echo PASSWORD=postgres >> shmig.conf
+      echo HOST=db >> shmig.conf
       ;;
     *)
       _err "invalid database $db"
@@ -124,7 +122,6 @@ _writeShmigConfig() {
   return 0
 
 }
-
 
 _startdb() {
   db="$1"
@@ -142,13 +139,12 @@ _startdb() {
       _debug "starting Docker instance $db"
       docker run --rm \
         -l info \
-	-d \
-	--name db \
+        -d \
+        --name db \
         -e MYSQL_ALLOW_EMPTY_PASSWORD=True \
-	"$db" \
-         > "$logfile" 2>&1
-      if [ $? -ne 0 ]
-      then
+        "$db" \
+        > "$logfile" 2>&1
+      if [ $? -ne 0 ]; then
         _err "Docker failed to start $db"
         return 1
       fi
@@ -157,13 +153,12 @@ _startdb() {
       _debug "starting Docker instance $db"
       docker run --rm \
         -d \
-	-l info \
+        -l info \
         --name db \
-	-e POSTGRES_PASSWORD=postgres \
-	"$db" \
-         > "$logfile" 2>&1
-      if [ $? -ne 0 ]
-      then
+        -e POSTGRES_PASSWORD=postgres \
+        "$db" \
+        > "$logfile" 2>&1
+      if [ $? -ne 0 ]; then
         _err "Docker failed to start $db"
         return 1
       fi
@@ -178,7 +173,6 @@ _startdb() {
 
 }
 
-
 # alpine:3.8-bash-mysql:8|apk update_cmd -f|apk --no-cache add -f|bash,mysql-client|/bin/bash
 _writeDockerFile() {
 
@@ -189,37 +183,36 @@ _writeDockerFile() {
   pkgs="$5"
 
   buildq="2>&1"
-  if [ "$DEBUG" ] || [ "$DEBUGING" ] ; then
+  if [ "$DEBUG" ] || [ "$DEBUGING" ]; then
     buildq=""
   fi
 
   echo "FROM $dockerimg" > "$platname/ClientDockerfile"
 
-  if [ "$install_cmd" ] ; then
+  if [ "$install_cmd" ]; then
 
     echo "RUN ${update_cmd:+$update_cmd $buildq &&} $install_cmd \\" \
       >> "$platname/ClientDockerfile"
 
-    if [ "$pkgs" ] ; then
-      pkgsline=$(echo "$pkgs" |  tr ',' ' ' )
+    if [ "$pkgs" ]; then
+      pkgsline=$(echo "$pkgs" | tr ',' ' ')
 
-      if [ "$pkgsline" ] ; then
-        echo "$pkgsline  $buildq"  >>  "$platname/ClientDockerfile"
+      if [ "$pkgsline" ]; then
+        echo "$pkgsline  $buildq" >> "$platname/ClientDockerfile"
       fi
 
     fi
   fi
 
-  if [ "$DEBUG" ] ; then
+  if [ "$DEBUG" ]; then
     cat "$platname/ClientDockerfile"
   fi
 
-  
 }
 
 # alpine:3.8|apk update|apk add|bash,sqlite|/bin/bash|sqlite
-clientimg() { 
-  echo "$1" | cut -d '|' -f 1 
+clientimg() {
+  echo "$1" | cut -d '|' -f 1
 }
 update() {
   echo "$1" | cut -d '|' -f 2
@@ -227,16 +220,16 @@ update() {
 install() {
   echo "$1" | cut -d '|' -f 3
 }
-pkgs()   {
+pkgs() {
   echo "$1" | cut -d '|' -f 4
 }
-shell()  {
+shell() {
   echo "$1" | cut -d '|' -f 5
 }
-shellbasename()  {
+shellbasename() {
   basename "$(echo "$1" | cut -d '|' -f 5)"
 }
-db()     {
+db() {
   echo "$1" | cut -d '|' -f 6
 }
 platname() {
@@ -257,7 +250,6 @@ testplat() {
   db="$(db "$platline")"
   shell="$(shell "$platline")"
 
-
   _debug "platname" "$platname"
   _debug "dockerimg" "$dockerimg"
   _debug "update_cmd" "$update_cmd"
@@ -265,7 +257,6 @@ testplat() {
   _debug "pkgs" "$pkgs"
   _debug "db" "$db"
   _debug "shell=" "$shell"
-
 
   _info "Running $platname, this may take a few minutes, please wait."
   mkdir -p "$platname"
@@ -275,14 +266,14 @@ testplat() {
   Log_Out="$(_getOutfile "$platname")"
   _debug "Log_Out" "$Log_Out"
 
-  if ! _startdb "$db" "$Log_Out" ; then
+  if ! _startdb "$db" "$Log_Out"; then
     update_results "$code" "$platname" "$shell" "$db" "$dockerimg"
     return "$code"
   fi
 
   _writeShmigConfig "$db"
 
-  if docker build -t "$platname" -f "$platname/ClientDockerfile" "$platname" > "$Log_Out" 2>&1 ; then
+  if docker build -t "$platname" -f "$platname/ClientDockerfile" "$platname" > "$Log_Out" 2>&1; then
 
     docker run --net=shmig-net --rm \
       -e DEBUG="$DEBUG" \
@@ -308,26 +299,45 @@ testplat() {
 testall() {
   code=0
   docker network create shmig-net
-  grep -v '^#' test_runner.conf | while read -r plat
-  do
-    if [ "$plat" ] ; then
-      testplat "$plat"
-      code=$(( code + $? ))
+  # The normal behavior, followed by all Bourne/POSIX shells (dash,
+  # ksh, pdksh, mksh, bash, zsh even when not in sh emulation mode,
+  # BusyBox sh, Bourne shell, …) is that read -r line strips leading
+  # and trailing whitespace characters.
+  #
+  # If you want no stripping, the standard method is to run
+  #   IFS= read -r
+  # ref: https://unix.stackexchange.com/a/383574
+  #
+  # Stripping is fine here, so no IFS=
+  #
+  # Also, posix does not support subprocesses (that is,
+  #
+  #     done < <(grep -v '^#' test_runner.comf)
+  #
+  # and mkfifo seemed heavy, so just skip lines that start with comment.
+  # ref: https://stackoverflow.com/a/38796342
+  while read -r plat; do
+    if echo "$plat" | grep '^#' > /dev/null; then
+      continue
     fi
-  done
+    break
+    if [ "$plat" ]; then
+      testplat "$plat"
+      code=$((code + $?))
+    fi
+  done < test_runner.conf
   docker network rm shmig-net
   test "$code" = "0"
   return $?
 }
 
-
-if [ "$CI" = "1" ] ; then
+if [ "$CI" = "1" ]; then
   rm -f "$Results"
   echo "| Client | Shell | DB  | Result | Test Date |" > "$Results"
   echo "| ------ | ----- | --- | ------ | --------- |" >> "$Results"
 fi
 
-if [ "$DEBUG" ] ; then
+if [ "$DEBUG" ]; then
   cat test_runner.conf
   grep -v '^#' test_runner.conf
 fi
@@ -336,12 +346,11 @@ testall
 
 code="$?"
 
-
-if [ "$CI" = "1" ] ; then
+if [ "$CI" = "1" ]; then
   cat head.md "$Results" > README.md
-  git add README.md >/dev/null 2>&1
-  git add logs/* >/dev/null 2>&1
-  git commit -m "CI test run" >/dev/null 2>&1
+  git add README.md > /dev/null 2>&1
+  git add logs/* > /dev/null 2>&1
+  git commit -m "CI test run" > /dev/null 2>&1
 
   # Decode private deploy SSH key
   openssl aes-256-cbc -k "$travis_key_password" -md sha256 -d -a -in travis_key.enc -out ./travis_key
@@ -349,16 +358,16 @@ if [ "$CI" = "1" ] ; then
   echo "Host github.com" > ~/.ssh/config
   echo "  IdentityFile $(pwd)/travis_key" >> ~/.ssh/config
   git remote set-url origin git@github.com:mbucc/shmig_test.git
-  if [ "$DEBUG" ] ; then
+  if [ "$DEBUG" ]; then
     cat ~/.ssh/config
-    echo "$(pwd)"
-    ls -l $(pwd)/travis_key
+    pwd
+    ls -l "$(pwd)/travis_key"
     git remote -v
     ssh -T git@github.com
   fi
   echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" > ~/.ssh/known_hosts
 
-  if ! git push -v ; then
+  if ! git push -v; then
     _err "git push error"
   fi
 fi
