@@ -123,6 +123,8 @@ _writeShmigConfig() {
 
 }
 
+
+
 _startdb() {
   db="$1"
   logfile="$2"
@@ -138,20 +140,36 @@ _startdb() {
     mysql*)
       _debug "starting Docker instance $db"
       docker run --rm \
+        --net=shmig-net \
         -l info \
         -d \
         --name db \
         -e MYSQL_ALLOW_EMPTY_PASSWORD=True \
         "$db" \
-        > "$logfile" 2>&1
+        >> "$logfile" 2>&1
       if [ $? -ne 0 ]; then
         _err "Docker failed to start $db"
         return 1
       fi
+
+      # Wait for it ...
+
+      _debug "Waiting for $db database to start ..."
+      attempts_left=100
+      until docker run --rm --net shmig-net "$db" mysqladmin -h db ping >> "$logfile" 2>&1 ;
+      do
+        attempts_left=$(( attempts_left - 1 ))
+	if [ $attempts_left -lt 1 ] ; then
+	  break
+	fi
+        sleep 1
+      done
       ;;
+
     psql*)
       _debug "starting Docker instance $db"
       docker run --rm \
+        --net=shmig-net \
         -d \
         -l info \
         --name db \
@@ -162,7 +180,21 @@ _startdb() {
         _err "Docker failed to start $db"
         return 1
       fi
+
+      # Wait for it ...
+
+      _debug "Waiting for $db to start ..."
+      attempts_left=15
+      until docker run --rm --net shmig-net "$db" pg_isready -h db -t 3 >> "$logfile" 2>&1 ;
+      do
+        attempts_left=$(( attempts_left - 1 ))
+	if [ $attempts_left -lt 1 ] ; then
+	  break
+	fi
+        sleep 1
+      done
       ;;
+
     *)
       _err "Invalid Docker image $db"
       return 1
@@ -317,13 +349,17 @@ testall() {
   # and mkfifo seemed heavy, so just skip lines that start with comment.
   # ref: https://stackoverflow.com/a/38796342
   while read -r plat; do
+    _debug "$plat"
     if echo "$plat" | grep '^#' > /dev/null; then
+      _debug "  SKIP"
       continue
     fi
-    break
     if [ "$plat" ]; then
+      _debug "  TEST"
       testplat "$plat"
       code=$((code + $?))
+
+      docker rm -f db
     fi
   done < test_runner.conf
   docker network rm shmig-net
@@ -335,11 +371,6 @@ if [ "$CI" = "1" ]; then
   rm -f "$Results"
   echo "| Client | Shell | DB  | Result | Test Date |" > "$Results"
   echo "| ------ | ----- | --- | ------ | --------- |" >> "$Results"
-fi
-
-if [ "$DEBUG" ]; then
-  cat test_runner.conf
-  grep -v '^#' test_runner.conf
 fi
 
 testall
