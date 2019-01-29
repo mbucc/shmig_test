@@ -91,22 +91,22 @@ update_results() {
 }
 
 _writeShmigConfig() {
-  db="$1"
+  dbimg="$1"
 
   echo MIGRATIONS=./sql > shmig.conf
 
-  case "$db" in
-    sqlite3*)
+  case $(imgtodb "$dbimg") in
+    SQLITE)
       echo TYPE=sqlite3 >> shmig.conf
       echo DATABASE=./sql/test.db >> shmig.conf
       ;;
-    mysql*)
+    MYSQL)
       echo TYPE=mysql >> shmig.conf
       echo DATABASE=mysql >> shmig.conf
       echo LOGIN=root >> shmig.conf
       echo HOST=db >> shmig.conf
       ;;
-    psql*)
+    POSTGRES)
       echo TYPE=postgresql >> shmig.conf
       echo DATABASE=postgres >> shmig.conf
       echo LOGIN=postgres >> shmig.conf
@@ -114,7 +114,7 @@ _writeShmigConfig() {
       echo HOST=db >> shmig.conf
       ;;
     *)
-      _err "invalid database $db"
+      _err "invalid database $dbimg"
       return 1
       ;;
   esac
@@ -125,38 +125,53 @@ _writeShmigConfig() {
 
 
 
+imgtodb() {
+  dbimg="$1"
+  if echo "$dbimg" | grep -i "sqlite" > /dev/null ; then
+    echo "SQLITE"
+  elif echo "$dbimg" | grep -i "mysql" > /dev/null ; then
+    echo "MYSQL"
+  elif echo "$dbimg" | grep -i "psql" > /dev/null ; then
+    echo "POSTGRES"
+  elif echo "$dbimg" | grep -i "postgres" > /dev/null ; then
+    echo "POSTGRES"
+  else
+    echo "UKNOWN"
+  fi
+}
+
 _startdb() {
-  db="$1"
+  dbimg="$1"
   logfile="$2"
 
-  _debug "_startdb($db)"
+  _debug "_startdb($dbimg)"
 
-  case "$db" in
-    sqlite*)
+  case $(imgtodb "$dbimg") in
+    SQLITE)
       _debug "no need to turn Docker for sqlite3"
-      rm -f ./sql/test.db
+      rm -f ./sql/test.dbimg
       mkdir -p ./sql
       ;;
-    mysql*)
-      _debug "starting Docker instance $db"
+    MYSQL)
+      _debug "starting Docker instance $dbimg"
       docker run --rm \
         --net=shmig-net \
         -l info \
         -d \
         --name db \
         -e MYSQL_ALLOW_EMPTY_PASSWORD=True \
-        "$db" \
+        "$dbimg" \
         >> "$logfile" 2>&1
       if [ $? -ne 0 ]; then
-        _err "Docker failed to start $db"
+        _err "Docker failed to start $dbimg"
         return 1
       fi
 
       # Wait for it ...
 
-      _debug "Waiting for $db database to start ..."
+      _debug "Waiting for $dbimg database to start ..."
       attempts_left=100
-      until docker run --rm --net shmig-net "$db" mysqladmin -h db ping >> "$logfile" 2>&1 ;
+      until docker run --rm --net shmig-net "$dbimg" mysqladmin -h db ping >> "$logfile" 2>&1 ;
       do
         attempts_left=$(( attempts_left - 1 ))
 	if [ $attempts_left -lt 1 ] ; then
@@ -166,26 +181,26 @@ _startdb() {
       done
       ;;
 
-    psql*)
-      _debug "starting Docker instance $db"
+    POSTGRES)
+      _debug "starting Docker instance $dbimg"
       docker run --rm \
         --net=shmig-net \
         -d \
         -l info \
         --name db \
         -e POSTGRES_PASSWORD=postgres \
-        "$db" \
+        "$dbimg" \
         > "$logfile" 2>&1
       if [ $? -ne 0 ]; then
-        _err "Docker failed to start $db"
+        _err "Docker failed to start $dbimg"
         return 1
       fi
 
       # Wait for it ...
 
-      _debug "Waiting for $db to start ..."
+      _debug "Waiting for $dbimg to start ..."
       attempts_left=15
-      until docker run --rm --net shmig-net "$db" pg_isready -h db -t 3 >> "$logfile" 2>&1 ;
+      until docker run --rm --net shmig-net "$dbimg" pg_isready -h db -t 3 >> "$logfile" 2>&1 ;
       do
         attempts_left=$(( attempts_left - 1 ))
 	if [ $attempts_left -lt 1 ] ; then
@@ -196,7 +211,7 @@ _startdb() {
       ;;
 
     *)
-      _err "Invalid Docker image $db"
+      _err "Invalid Docker image $dbimg"
       return 1
       ;;
   esac
@@ -261,11 +276,11 @@ shell() {
 shellbasename() {
   basename "$(echo "$1" | cut -d '|' -f 5)"
 }
-db() {
+dbimg() {
   echo "$1" | cut -d '|' -f 6
 }
 platname() {
-  echo "$(clientimg "$1")-$(shellbasename "$1")-$(db "$1")"
+  echo "$(clientimg "$1")-$(shellbasename "$1")-$(dbimg "$1")"
 }
 
 # alpine:3.8|apk update|apk add|bash,sqlite|/bin/bash|sqlite
@@ -275,41 +290,41 @@ testplat() {
   _debug "platline" "$platline"
 
   platname="$(_normalizeFilename "$(platname "$platline")")"
-  dockerimg="$(clientimg "$platline")"
+  clientimg="$(clientimg "$platline")"
   update_cmd="$(update "$platline")"
   install_cmd="$(install "$platline")"
   pkgs="$(pkgs "$platline")"
-  db="$(db "$platline")"
+  dbimg="$(dbimg "$platline")"
   shell="$(shell "$platline")"
 
   _debug "platname" "$platname"
-  _debug "dockerimg" "$dockerimg"
+  _debug "clientimg" "$clientimg"
   _debug "update_cmd" "$update_cmd"
   _debug "install_cmd" "$install_cmd"
   _debug "pkgs" "$pkgs"
-  _debug "db" "$db"
+  _debug "dbimg" "$dbimg"
   _debug "shell=" "$shell"
 
   _info "Running $platname, this may take a few minutes, please wait."
   mkdir -p "$platname"
 
-  _writeDockerFile "$platname" "$dockerimg" "$update_cmd" "$install_cmd" "$pkgs"
+  _writeDockerFile "$platname" "$clientimg" "$update_cmd" "$install_cmd" "$pkgs"
 
   Log_Out="$(_getOutfile "$platname")"
   _debug "Log_Out" "$Log_Out"
 
-  if ! _startdb "$db" "$Log_Out"; then
-    update_results "$code" "$platname" "$shell" "$db" "$dockerimg"
-    return "$code"
+  if ! _startdb "$dbimg" "$Log_Out"; then
+    update_results "1" "$platname" "$shell" "$dbimg" "$clientimg"
+    return 1
   fi
 
-  _writeShmigConfig "$db"
+  _writeShmigConfig "$dbimg"
 
   if docker build -t "$platname" -f "$platname/ClientDockerfile" "$platname" > "$Log_Out" 2>&1; then
 
     docker run --net=shmig-net --rm \
       -e DEBUG="$DEBUG" \
-      -e DB="$db" \
+      -e DB="$dbimg" \
       -v "$(pwd)":/shmigtest \
       "$platname" "$shell" -c "cd /shmigtest && ./test_shmig.sh" >> "$Log_Out" 2>&1
 
@@ -322,7 +337,7 @@ testplat() {
     cat "$Log_Out"
   fi
 
-  update_results "$code" "$platname" "$shell" "$db" "$dockerimg"
+  update_results "$code" "$platname" "$shell" "$dbimg" "$clientimg"
 
   return $code
 
@@ -351,18 +366,16 @@ testall() {
   while read -r plat; do
     _debug "$plat"
     if echo "$plat" | grep '^#' > /dev/null; then
-      _debug "  SKIP"
       continue
     fi
     if [ "$plat" ]; then
-      _debug "  TEST"
       testplat "$plat"
       code=$((code + $?))
 
-      docker rm -f db
+      docker rm -f db > /dev/null 2>&1
     fi
   done < test_runner.conf
-  docker network rm shmig-net
+  docker network rm shmig-net > /dev/null 2>&1
   test "$code" = "0"
   return $?
 }
