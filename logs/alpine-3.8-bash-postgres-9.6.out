@@ -2,7 +2,7 @@ Sending build context to Docker daemon  2.048kB
 Step 1/2 : FROM alpine:3.8
  ---> 3f53bb00af94
 Step 2/2 : RUN apk update  && apk add bash postgresql-client
- ---> Running in 2963f4d84529
+ ---> Running in 2bad511d8226
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/community/x86_64/APKINDEX.tar.gz
 v3.8.2-33-gd1a2d86a89 [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
@@ -22,9 +22,9 @@ Executing bash-4.4.19-r1.post-install
 (11/11) Installing postgresql-client (10.5-r0)
 Executing busybox-1.28.4-r2.trigger
 OK: 18 MiB in 24 packages
- ---> 121a03b9f0e0
-Removing intermediate container 2963f4d84529
-Successfully built 121a03b9f0e0
+ ---> fa089cfcb716
+Removing intermediate container 2bad511d8226
+Successfully built fa089cfcb716
 Successfully tagged alpine-3.8-bash-postgres-9.6:latest
 		stdout: PASS
 		stderr: PASS
