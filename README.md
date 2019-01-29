@@ -3,6 +3,9 @@ SHMIG_TEST
 
 Automated tests for [`shmig`](https://github.com/mbucc/shmig/blob/master/shmig).
 
+Inspired by (and with much code from!) the most-excellent 
+https://github.com/Neilpang/acmetest project. 
+
 
 Latest Results
 -----------------
