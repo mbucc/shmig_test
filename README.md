@@ -1,7 +1,7 @@
 SHMIG_TEST
 =================
 
-Automated tests for [`shmig`](https://github.com/mbucc/shmig/blob/master/shmig).
+Automated tests for [`shmig`](https://github.com/mbucc/shmig).
 
 
 Latest Results
