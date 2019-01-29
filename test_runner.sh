@@ -273,11 +273,11 @@ pkgs() {
 shell() {
   echo "$1" | cut -d '|' -f 5
 }
-shellbasename() {
-  basename "$(echo "$1" | cut -d '|' -f 5)"
-}
 dbimg() {
   echo "$1" | cut -d '|' -f 6
+}
+shellbasename() {
+  basename "$(echo "$1" | cut -d '|' -f 5)"
 }
 platname() {
   echo "$(clientimg "$1")-$(shellbasename "$1")-$(dbimg "$1")"
