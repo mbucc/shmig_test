@@ -149,7 +149,7 @@ _startdb() {
   case $(imgtodb "$dbimg") in
     SQLITE)
       _debug "no need to turn Docker for sqlite3"
-      rm -f ./sql/test.dbimg
+      rm -f ./sql/test.db
       mkdir -p ./sql
       ;;
     MYSQL)
