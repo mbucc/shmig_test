@@ -2,10 +2,10 @@ Sending build context to Docker daemon  2.048kB
 Step 1/2 : FROM alpine:3.8
  ---> dac705114996
 Step 2/2 : RUN apk update  && apk add bash mysql-client
- ---> Running in 5406220f1862
+ ---> Running in ba053a6388f8
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/community/x86_64/APKINDEX.tar.gz
-v3.8.4-70-g4f612b20d6 [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
+v3.8.4-71-g5ee28b356b [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
 v3.8.4-65-g31b2b4fe07 [http://dl-cdn.alpinelinux.org/alpine/v3.8/community]
 OK: 9558 distinct packages available
 (1/10) Installing ncurses-terminfo-base (6.1_p20180818-r1)
@@ -21,47 +21,9 @@ Executing bash-4.4.19-r1.post-install
 (10/10) Installing mysql-client (10.2.22-r0)
 Executing busybox-1.28.4-r3.trigger
 OK: 45 MiB in 23 packages
- ---> f47b2dcece83
-Removing intermediate container 5406220f1862
-Successfully built f47b2dcece83
+ ---> d5df60b5a081
+Removing intermediate container ba053a6388f8
+Successfully built d5df60b5a081
 Successfully tagged alpine-3.8-bash-mysql-5.7:latest
-		stdout: FAIL
---- test_shmig_stdout.expected
-+++ stdout.actual
-@@ -4,16 +4,12 @@
- 
- status
- ---------------
--Applied migrations:
--1485643154|*now*
- 
- rollback
- ---------------
- 
- pending
- ---------------
--1485643154-create_table.sql
--1485648520-testdata.sql
- 
- migrate
- ---------------
-@@ -23,9 +19,6 @@
- 
- status
- ---------------
--Applied migrations:
--1485643154|*now*
- 
- pending
- ---------------
--1485648520-testdata.sql
-		stderr: FAIL
---- test_shmig_stderr.expected
-+++ stderr.actual
-@@ -1,6 +0,0 @@
--shmig: creating migrations table: shmig_version
--shmig: applying  'create_table'	(1485643154)... done
--shmig: reverting 'create_table'	(1485643154)... done
--shmig: applying  'create_table'	(1485643154)... done
--shmig: applying  'testdata'	(1485648520)... done
--shmig: reverting 'testdata'	(1485648520)... done
+		stdout: PASS
+		stderr: PASS
