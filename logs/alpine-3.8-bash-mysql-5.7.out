@@ -2,7 +2,7 @@ Sending build context to Docker daemon  2.048kB
 Step 1/2 : FROM alpine:3.8
  ---> dac705114996
 Step 2/2 : RUN apk update  && apk add bash mysql-client
- ---> Running in 6d050f733a40
+ ---> Running in c6e5e93eb9b9
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/community/x86_64/APKINDEX.tar.gz
 v3.8.4-83-g1f7ae7dee3 [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
@@ -21,9 +21,9 @@ Executing bash-4.4.19-r1.post-install
 (10/10) Installing mysql-client (10.2.24-r0)
 Executing busybox-1.28.4-r3.trigger
 OK: 45 MiB in 23 packages
- ---> ffa23b0da9a0
-Removing intermediate container 6d050f733a40
-Successfully built ffa23b0da9a0
+ ---> 2a97d69a200e
+Removing intermediate container c6e5e93eb9b9
+Successfully built 2a97d69a200e
 Successfully tagged alpine-3.8-bash-mysql-5.7:latest
 		stdout: PASS
 		stderr: PASS
