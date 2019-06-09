@@ -344,7 +344,7 @@ testplat() {
 }
 
 testall() {
-  code=0
+  local testall_rc=0
   docker network create shmig-net
   # The normal behavior, followed by all Bourne/POSIX shells (dash,
   # ksh, pdksh, mksh, bash, zsh even when not in sh emulation mode,
@@ -370,13 +370,13 @@ testall() {
     fi
     if [ "$plat" ]; then
       testplat "$plat"
-      code=$((code + $?))
-
+      testall_rc=$((testall_rc + $?))
       docker rm -f db > /dev/null 2>&1
     fi
   done < test_runner.conf
+
   docker network rm shmig-net > /dev/null 2>&1
-  test "$code" = "0"
+  test "$testall_rc" = "0"
   return $?
 }
 
