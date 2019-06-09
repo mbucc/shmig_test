@@ -2,10 +2,10 @@ Sending build context to Docker daemon  2.048kB
 Step 1/2 : FROM alpine:3.8
  ---> dac705114996
 Step 2/2 : RUN apk update  && apk add bash mysql-client
- ---> Running in ba053a6388f8
+ ---> Running in 6d050f733a40
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/community/x86_64/APKINDEX.tar.gz
-v3.8.4-71-g5ee28b356b [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
+v3.8.4-83-g1f7ae7dee3 [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
 v3.8.4-65-g31b2b4fe07 [http://dl-cdn.alpinelinux.org/alpine/v3.8/community]
 OK: 9558 distinct packages available
 (1/10) Installing ncurses-terminfo-base (6.1_p20180818-r1)
@@ -14,16 +14,16 @@ OK: 9558 distinct packages available
 (4/10) Installing readline (7.0.003-r0)
 (5/10) Installing bash (4.4.19-r1)
 Executing bash-4.4.19-r1.post-install
-(6/10) Installing mariadb-common (10.2.22-r0)
+(6/10) Installing mariadb-common (10.2.24-r0)
 (7/10) Installing libgcc (6.4.0-r9)
 (8/10) Installing libstdc++ (6.4.0-r9)
-(9/10) Installing mariadb-client (10.2.22-r0)
-(10/10) Installing mysql-client (10.2.22-r0)
+(9/10) Installing mariadb-client (10.2.24-r0)
+(10/10) Installing mysql-client (10.2.24-r0)
 Executing busybox-1.28.4-r3.trigger
 OK: 45 MiB in 23 packages
- ---> d5df60b5a081
-Removing intermediate container ba053a6388f8
-Successfully built d5df60b5a081
+ ---> ffa23b0da9a0
+Removing intermediate container 6d050f733a40
+Successfully built ffa23b0da9a0
 Successfully tagged alpine-3.8-bash-mysql-5.7:latest
 		stdout: PASS
 		stderr: PASS
