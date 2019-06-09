@@ -2,10 +2,10 @@ Sending build context to Docker daemon  2.048kB
 Step 1/2 : FROM alpine:3.8
  ---> dac705114996
 Step 2/2 : RUN apk update  && apk add bash postgresql-client
- ---> Running in 963f8ff580e4
+ ---> Running in 7279a397feb1
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/v3.8/community/x86_64/APKINDEX.tar.gz
-v3.8.4-70-g4f612b20d6 [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
+v3.8.4-83-g1f7ae7dee3 [http://dl-cdn.alpinelinux.org/alpine/v3.8/main]
 v3.8.4-65-g31b2b4fe07 [http://dl-cdn.alpinelinux.org/alpine/v3.8/community]
 OK: 9558 distinct packages available
 (1/11) Installing ncurses-terminfo-base (6.1_p20180818-r1)
@@ -22,9 +22,9 @@ Executing bash-4.4.19-r1.post-install
 (11/11) Installing postgresql-client (10.8-r0)
 Executing busybox-1.28.4-r3.trigger
 OK: 18 MiB in 24 packages
- ---> 5641ef870072
-Removing intermediate container 963f8ff580e4
-Successfully built 5641ef870072
+ ---> 91a24d13a2fc
+Removing intermediate container 7279a397feb1
+Successfully built 91a24d13a2fc
 Successfully tagged alpine-3.8-bash-postgres-9.6:latest
 		stdout: PASS
 		stderr: PASS
